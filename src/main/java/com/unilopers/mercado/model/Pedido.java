@@ -1,11 +1,8 @@
 package com.unilopers.mercado.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import java.util.List;
+
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -14,6 +11,7 @@ import lombok.Data;
 public class Pedido {
 
  @Id
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_pedido")
     private Long idPedido;
 
@@ -29,6 +27,9 @@ public class Pedido {
     @ManyToOne
     @JoinColumn(name = "fk_cliente", nullable = false)
     private Cliente cliente;
+    
+      @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
+    private List<Item_pedido> itens;
 
 }
 
