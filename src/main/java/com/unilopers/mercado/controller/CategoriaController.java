@@ -78,6 +78,5 @@ public class CategoriaController {
         }
         categoriaRepository.deleteById(id);
         return ResponseEntity.noContent().build();
-
     }
 }
