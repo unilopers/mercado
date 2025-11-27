@@ -1,6 +1,7 @@
 package com.unilopers.mercado.controller;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import com.unilopers.mercado.model.Pedido;
 import com.unilopers.mercado.model.ResumoPedido;
 import com.unilopers.mercado.model.Item_pedido;
+import com.unilopers.mercado.repository.Item_pedidoRepository;
 import com.unilopers.mercado.repository.PedidoRepository;
 import com.unilopers.mercado.repository.ResumoPedidoRepository;
 
@@ -21,30 +23,34 @@ public class ResumoPedidoController {
     @Autowired
     private ResumoPedidoRepository resumoRepository;
 
-  @PostMapping("/gerar/{idPedido}")
-public ResumoPedido gerarResumo(@PathVariable Long idPedido) {
+    @Autowired
+    private Item_pedidoRepository itemPedidoRepository;
 
-    Pedido pedido = pedidoRepository.findById(idPedido)
-            .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+    @PostMapping("/gerar/{idPedido}")
+    public ResumoPedido gerarResumo(@PathVariable Long idPedido) {
 
-    ResumoPedido resumo = new ResumoPedido();
-    resumo.setPedido(pedido);
+        Pedido pedido = pedidoRepository.findById(idPedido)
+                .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
 
-    int totalItens = pedido.getItens().stream()
-            .mapToInt(Item_pedido::getQuantidade)
-            .sum();
+        // Busca os itens do pedido diretamente da tabela item_pedido
+        List<Item_pedido> itens = itemPedidoRepository.findByPedidoIdPedido(idPedido);
 
-    resumo.setQuantidadeItens(totalItens);
+        ResumoPedido resumo = new ResumoPedido();
+        resumo.setPedido(pedido);
 
-    BigDecimal totalBruto = BigDecimal.valueOf(pedido.getPrecoTotal());
-    resumo.setValorTotalBruto(totalBruto);
+        int totalItens = itens.stream()
+                .mapToInt(Item_pedido::getQuantidade)
+                .sum();
+        resumo.setQuantidadeItens(totalItens);
 
-    BigDecimal impostos = totalBruto.multiply(BigDecimal.valueOf(0.10));
-    resumo.setValorImpostos(impostos);
+        BigDecimal totalBruto = BigDecimal.valueOf(pedido.getPrecoTotal());
+        resumo.setValorTotalBruto(totalBruto);
 
-    resumo.setValorTotalFinal(totalBruto.add(impostos));
+        BigDecimal impostos = totalBruto.multiply(BigDecimal.valueOf(0.10));
+        resumo.setValorImpostos(impostos);
 
-    return resumoRepository.save(resumo);
-}
-   
+        resumo.setValorTotalFinal(totalBruto.add(impostos));
+
+        return resumoRepository.save(resumo);
+    }
 }
