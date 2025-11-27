@@ -31,51 +31,5 @@ public class ResumoPedido {
     @Column(name = "valor_total_final", nullable = false)
     private BigDecimal valorTotalFinal;
 
-    public Long getIdResumo() {
-        return idResumo;
-    }
-
-    public void setIdResumo(Long idResumo) {
-        this.idResumo = idResumo;
-    }
-
-    public Pedido getPedido() {
-        return pedido;
-    }
-
-    public void setPedido(Pedido pedido) {
-        this.pedido = pedido;
-    }
-
-    public int getQuantidadeItens() {
-        return quantidadeItens;
-    }
-
-    public void setQuantidadeItens(int quantidadeItens) {
-        this.quantidadeItens = quantidadeItens;
-    }
-
-    public BigDecimal getValorTotalBruto() {
-        return valorTotalBruto;
-    }
-
-    public void setValorTotalBruto(BigDecimal valorTotalBruto) {
-        this.valorTotalBruto = valorTotalBruto;
-    }
-
-    public BigDecimal getValorImpostos() {
-        return valorImpostos;
-    }
-
-    public void setValorImpostos(BigDecimal valorImpostos) {
-        this.valorImpostos = valorImpostos;
-    }
-
-    public BigDecimal getValorTotalFinal() {
-        return valorTotalFinal;
-    }
-
-    public void setValorTotalFinal(BigDecimal valorTotalFinal) {
-        this.valorTotalFinal = valorTotalFinal;
-    }
+   
 }
