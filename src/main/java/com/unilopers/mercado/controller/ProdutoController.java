@@ -39,7 +39,7 @@ public class ProdutoController {
             }
             return ResponseEntity.status(201).body(produto);
         }catch (Exception e){
-            return ResponseEntity.status(400).body("Ocorreu um erro:" + e.getMessage());
+            return ResponseEntity.status(400).body("Ocorreu um erro: " + e.getMessage());
         }
     }
 
@@ -81,8 +81,8 @@ public class ProdutoController {
     }
 
 
-    @PutMapping("/atualizar/{id}")
-    public ResponseEntity<?> atualizarProduto(@PathVariable Long id, @RequestBody Produto produtoAtual) throws Exception {
+    @PutMapping("/atualizar")
+    public ResponseEntity<?> atualizarProduto(@RequestBody Produto produtoAtual) throws Exception {
         try {
             if (produtoAtual.getIdProduto() == null) {
                 throw new Exception("O id do produto é obrigatório para atualizar.");
@@ -92,7 +92,7 @@ public class ProdutoController {
                 throw new Exception("Usuário com id " + produtoAtual.getIdProduto() + " não encontrado.");
             }
 
-            Optional<Produto> opt = produtoRepository.findById(id);
+            Optional<Produto> opt = produtoRepository.findById(produtoAtual.getIdProduto());
             if (opt.isEmpty()) {
                 throw new Exception("Produto com ID informado não encontrado.");
             }
@@ -100,7 +100,7 @@ public class ProdutoController {
 
             if (produtoAtual.getNomeProduto() != null && !produtoAtual.getNomeProduto().equalsIgnoreCase(produto.getNomeProduto())) {
                 Optional<Produto> findbyNome = produtoRepository.findByNomeProduto(produtoAtual.getNomeProduto());
-                if (findbyNome.isPresent() && !findbyNome.get().getIdProduto().equals(id)) {
+                if (findbyNome.isPresent() && !findbyNome.get().getIdProduto().equals(produtoAtual.getIdProduto())) {
                     throw new Exception("Já existe um produto com esse nome.");
                 }
                 produto.setNomeProduto(produtoAtual.getNomeProduto());
@@ -149,7 +149,7 @@ public class ProdutoController {
                 throw new Exception("Produto com ID informado não encontrado.");
             }
             produtoRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.status(200).body("Produto deletado com sucesso!");
         }catch (Exception e){
             return ResponseEntity.status(400).body("Ocorreu um erro:\n" + e.getMessage());
         }
